@@ -16,10 +16,10 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly DataContext _context;
-        private readonly ITokenService _tokenservoce;
-        public AccountController(DataContext context, ITokenService tokenservoce)
+        private readonly ITokenService _tokenservice;
+        public AccountController(DataContext context, ITokenService tokenservice)
         {
-            _tokenservoce = tokenservoce;
+            _tokenservice = tokenservice;
             _context = context;
         }
 
@@ -40,14 +40,14 @@ namespace API.Controllers
 
                 return new DTOUser{
                     un = user.UserName,
-                 token = _tokenservoce.CreateToken(user)
+                 token = _tokenservice.CreateToken(user)
                 };
         
         
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> login(DTOLogin dtologin)
+        public async Task<ActionResult<DTOUser>> login(DTOLogin dtologin)
         {
              var user = await _context.Users.SingleOrDefaultAsync( u =>  u.UserName == dtologin.un.ToLower());
              if(user == null) return Unauthorized("Unauthorized User");
@@ -60,9 +60,12 @@ namespace API.Controllers
              {
                  if(computehash[i] != user.PasswordHash[i])
                      return Unauthorized("Invalid Password");
-             }
+             };
 
-             return user;
+             return new DTOUser{
+                    un = user.UserName,
+                 token = _tokenservice.CreateToken(user)
+                };
 
 
 
