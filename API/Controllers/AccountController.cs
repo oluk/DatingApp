@@ -38,6 +38,8 @@ namespace API.Controllers
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
+            
+
                 return new DTOUser{
                     un = user.UserName,
                  token = _tokenservice.CreateToken(user)
@@ -66,6 +68,8 @@ namespace API.Controllers
                     un = user.UserName,
                  token = _tokenservice.CreateToken(user)
                 };
+
+            
 
 
 

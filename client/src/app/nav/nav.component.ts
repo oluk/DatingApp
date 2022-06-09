@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { User } from '../_models/User';
 import { AccountService } from '../_services/account.service';
 
@@ -10,42 +11,53 @@ import { AccountService } from '../_services/account.service';
 export class NavComponent implements OnInit {
 
    model : any = {};
-   user : User;
+   currentUser$ : Observable<User>;
 
-   loggedIn: boolean = false;
+   //loggedIn: boolean = false;
   constructor(private accountservice: AccountService) { }
 
+  // ngOnInit(): void {
+  //   this.getCurrentUser();
+  // }
+
+  //using async pipe for auto subscription
   ngOnInit(): void {
-    this.getCurrentUser();
-  }
+     this.currentUser$ = this.accountservice.currentUser$;
+   }
+
+
 
   login()
   {
     this.accountservice.login(this.model).subscribe({
-      next: response => { this.loggedIn = true; console.log(response)},
-      error: error => {console.log(error)}
+      next: response => {
+         //this.loggedIn = true;
+         console.log(response)},
+      error: error => {
+        console.log(error)}
     })
   }
 
   logout()
   {
     this.accountservice.logout();
-    this.loggedIn = false;
+   // this.loggedIn = false;
   }
 
-  getCurrentUser()
-  {
-    this.accountservice.currentUser$.subscribe(
-      user => {
-        this.loggedIn = !!user;
-        if(this.loggedIn)
-           this.user = user;
+  //NOt needed because we are using auto subscription to currentUsers$
+  // getCurrentUser()
+  // {
+  //   this.accountservice.currentUser$.subscribe(
+  //     user => {
+  //       this.loggedIn = !!user;
+  //       if(this.loggedIn)
+  //          this.user = user;
            
-      },
-      error => {
-        console.log(error);
-      }
-    );
-  }
+  //     },
+  //     error => {
+  //       console.log(error);
+  //     }
+  //   );
+  // }
 
 }

@@ -15,7 +15,7 @@
             <a class="nav-link">Disabled</a>
           </li>
          </ul>
-        <form *ngIf="!loggedIn" #loginform="ngForm" class="d-flex" (ngSubmit)="login()" autocomplete="off">
+        <form *ngIf="(currentUser$ | async) === null" #loginform="ngForm" class="d-flex" (ngSubmit)="login()" autocomplete="off">
           <input 
               name = "username"
               [(ngModel)]="model.username"
@@ -31,7 +31,7 @@
           <button class="btn btn-outline-success" type="submit">Login</button>
         </form>
 
-        <div *ngIf="loggedIn" class="dropdown" dropdown>
+        <div *ngIf="currentUser$ | async" class="dropdown" dropdown>
            <a class="dropdown-toggle text-light" dropdownToggle>Welcome {{user.un}}</a>
            <div class="dropdown-menu" *dropdownMenu>
              <a class="dropdown-item">Edit Profile</a>
